@@ -1,7 +1,9 @@
 package fr.eisti.ing1.java.cdmanager.data;
+import java.io.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -245,6 +247,16 @@ public class CDTheque implements Iterable<CDAudio> {
 	 */
     public void sauvegarder(String nomFichier){
       //TODO
+    	try {
+    		FileOutputStream fos = new FileOutputStream(nomFichier);
+    		ObjectOutputStream oos = new ObjectOutputStream(fos);
+    		oos.writeObject(catalogue);
+    		oos.close();
+    		fos.close();
+    		System.out.println("File saved");
+    	}
+    	catch (Exception e) {
+    		System.out.println("Error in output:" + e.toString());    	}
    	}
 
 	/**
@@ -255,9 +267,24 @@ public class CDTheque implements Iterable<CDAudio> {
 	 */
   	public void charger(String nomFichier) {
 		// Pour l'instant chargement en dur de qqs CDs
-		this.ajouterCD(1L, "J.Geils Band", "live in Detroit", "Rythm&Blues", 14);
-		this.ajouterCD(2L, "Deep Purple", "Made in Europe", "Hard Rock", 12);
-		this.ajouterCD(3L, "Rolling Stones", "Love you Live", "Rythm&Blues", 7);
+	    try
+	    {
+	        FileInputStream fis = new FileInputStream("movies.txt");
+	        ObjectInputStream ois = new ObjectInputStream(fis);
+	        catalogue = (List<CDAudio>) ois.readObject();
+	        Iterator<CDAudio> it = this.catalogue.iterator();
+	        while (it.hasNext()) {
+	        	CDAudio cd = it.next();
+	        	cd.toString();
+	        	this.ajouterCD(cd);
+	        }
+	        ois.close();
+	        System.out.println("File Imported");
+	    }
+	    catch(Exception e)
+	    {
+	        System.out.println("Error in output:" + e.toString());
+	    }
 	}
 
 	/**
